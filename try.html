@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CGPA Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f0f0f0;
+      }
+      #container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        position: relative;
+      }
+      h1 {
+        color: #333;
+      }
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        width: 45%;
+      }
+      .input-set {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+      #generate-btn,
+      #calculate-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #calculate-btn {
+        display: none;
+      }
+      #result {
+        font-size: 20px;
+        margin-top: 20px;
+      }
+      #logout-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: #fff;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <button id="logout-btn">Logout</button>
+      <h1>SGPA Calculator</h1>
+      <p>Please enter the number of subjects:</p>
+      <form id="subject-form">
+        <input
+          type="text"
+          id="num_subjects"
+          placeholder="Enter number of subjects"
+          required
+        />
+        <br /><br />
+        <button id="generate-btn" type="button">Generate Fields</button>
+      </form>
+      <div id="input-fields"></div>
+      <button id="calculate-btn">Calculate SGPA</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      // JavaScript code remains the same
+      // ...
+
+      // Add an event listener to the logout button
+      document
+        .getElementById("generate-btn")
+        .addEventListener("click", function () {
+          var numSubjects = parseInt(
+            document.getElementById("num_subjects").value
+          );
+
+          if (!isNaN(numSubjects)) {
+            var inputFields = document.getElementById("input-fields");
+            inputFields.innerHTML = ""; // Clear previous fields
+
+            for (var i = 1; i <= numSubjects; i++) {
+              var inputSet = document.createElement("div");
+              inputSet.classList.add("input-set");
+
+              var actualInput = document.createElement("input");
+              actualInput.type = "text";
+              actualInput.name = "actual_credits_" + i;
+              actualInput.placeholder = "Actual credits";
+              actualInput.required = true;
+
+              var gainedInput = document.createElement("input");
+              gainedInput.type = "text";
+              gainedInput.name = "gained_grades_" + i;
+              gainedInput.placeholder = "Gained grades";
+              gainedInput.required = true;
+
+              inputSet.appendChild(actualInput);
+              inputSet.appendChild(gainedInput);
+
+              inputFields.appendChild(inputSet);
+            }
+
+            // Show the "Calculate CGPA" button
+            document.getElementById("calculate-btn").style.display = "block";
+          }
+        });
+
+      document
+        .getElementById("calculate-btn")
+        .addEventListener("click", function () {
+          var numSubjects = parseInt(
+            document.getElementById("num_subjects").value
+          );
+          var totalCredits = 0;
+          var totalPoints = 0;
+
+          for (var i = 1; i <= numSubjects; i++) {
+            var actualCredits = parseFloat(
+              document.getElementsByName("actual_credits_" + i)[0].value
+            );
+            var gainedGrades = parseFloat(
+              document.getElementsByName("gained_grades_" + i)[0].value
+            );
+
+            if (!isNaN(actualCredits) && !isNaN(gainedGrades)) {
+              totalCredits += actualCredits;
+              totalPoints += actualCredits * gainedGrades;
+            }
+          }
+
+          if (totalCredits > 0) {
+            var cgpa = totalPoints / totalCredits;
+            document.getElementById("result").innerHTML =
+              "Your CGPA is: " + cgpa.toFixed(2);
+          } else {
+            document.getElementById("result").innerHTML =
+              "Please enter valid credits and grades.";
+          }
+        });
+
+      document
+        .getElementById("logout-btn")
+        .addEventListener("click", function () {
+          window.history.back(); // Go back to the previous page
+        });
+      <!-- ... (previous HTML and CSS code) ... -->
+
+      // JavaScript code remains the same for generating fields and calculating SGPA
+
+      document
+        .getElementById("calculate-btn")
+        .addEventListener("click", function () {
+          var numSubjects = parseInt(
+            document.getElementById("num_subjects").value
+          );
+          var totalCredits = 0;
+          var totalPoints = 0;
+
+          for (var i = 1; i <= numSubjects; i++) {
+            var actualCredits = parseFloat(
+              document.getElementsByName("actual_credits_" + i)[0].value
+            );
+            var gainedGrades = parseFloat(
+              document.getElementsByName("gained_grades_" + i)[0].value
+            );
+
+            if (!isNaN(actualCredits) && !isNaN(gainedGrades)) {
+              totalCredits += actualCredits;
+              totalPoints += actualCredits * gainedGrades;
+            }
+          }
+
+          if (totalCredits > 0) {
+            var sgpa = totalPoints / totalCredits;
+            var message;
+
+            if (sgpa > 9) {
+              message = "Congratulations! You've achieved an outstanding SGPA.";
+            } else if (sgpa >= 8 && sgpa <= 9) {
+              message = "Great job! You've delivered an excellent performance.";
+            } else if (sgpa >= 7 && sgpa < 8) {
+              message =
+                "Well done! Your performance is good, but there's room for improvement.";
+            } else if (sgpa >= 6 && sgpa < 7) {
+              message =
+                "You have potential. Work hard to improve your performance.";
+            } else {
+              message =
+                "Your performance is below expectations. Consider seeking help and putting in more effort.";
+            }
+
+            document.getElementById("result").innerHTML =
+              "Your SGPA is: " + sgpa.toFixed(2) + "<br>" + message;
+          } else {
+            document.getElementById("result").innerHTML =
+              "Please enter valid credits and grades.";
+          }
+        });
+
+      // ... (rest of the code remains the same) ...
+    </script>
+  </body>
+</html>
